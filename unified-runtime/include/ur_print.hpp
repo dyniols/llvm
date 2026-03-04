@@ -197,22 +197,6 @@ inline ur_result_t printTagged(std::ostream &os, const void *ptr,
 
 template <>
 inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_info_t value, size_t size);
-
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_group_info_t value, size_t size);
-
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_sub_group_info_t value, size_t size);
-
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_exec_info_t value, size_t size);
-
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
                                ur_queue_info_t value, size_t size);
 
 template <>
@@ -237,6 +221,26 @@ template <>
 inline ur_result_t printFlag<ur_usm_migration_flag_t>(std::ostream &os,
                                                       uint32_t flag);
 
+inline ur_result_t printUnion(std::ostream &os,
+                              const union ur_exp_kernel_arg_value_t params,
+                              const enum ur_exp_kernel_arg_type_t tag);
+
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_info_t value, size_t size);
+
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_group_info_t value, size_t size);
+
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_sub_group_info_t value, size_t size);
+
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_exec_info_t value, size_t size);
+
 template <>
 inline ur_result_t
 printFlag<ur_exp_device_2d_block_array_capability_flag_t>(std::ostream &os,
@@ -249,10 +253,6 @@ inline ur_result_t printFlag<ur_exp_async_usm_alloc_flag_t>(std::ostream &os,
 template <>
 inline ur_result_t printFlag<ur_exp_image_copy_flag_t>(std::ostream &os,
                                                        uint32_t flag);
-
-inline ur_result_t printUnion(std::ostream &os,
-                              const union ur_exp_kernel_arg_value_t params,
-                              const enum ur_exp_kernel_arg_type_t tag);
 
 template <>
 inline ur_result_t printFlag<ur_exp_program_flag_t>(std::ostream &os,
@@ -475,36 +475,6 @@ inline std::ostream &operator<<(
 inline std::ostream &
 operator<<(std::ostream &os,
            [[maybe_unused]] const struct ur_program_native_properties_t params);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_arg_value_properties_t params);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_arg_local_properties_t params);
-inline std::ostream &operator<<(std::ostream &os, enum ur_kernel_info_t value);
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_group_info_t value);
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_sub_group_info_t value);
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_cache_config_t value);
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_exec_info_t value);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_arg_pointer_properties_t params);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_exec_info_properties_t params);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_arg_sampler_properties_t params);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_kernel_arg_mem_obj_properties_t params);
-inline std::ostream &
-operator<<(std::ostream &os,
-           [[maybe_unused]] const struct ur_kernel_native_properties_t params);
 inline std::ostream &operator<<(std::ostream &os, enum ur_queue_info_t value);
 inline std::ostream &operator<<(std::ostream &os, enum ur_queue_flag_t value);
 inline std::ostream &
@@ -543,6 +513,44 @@ inline std::ostream &operator<<(
 inline std::ostream &operator<<(std::ostream &os, enum ur_map_flag_t value);
 inline std::ostream &operator<<(std::ostream &os,
                                 enum ur_usm_migration_flag_t value);
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_exp_kernel_arg_type_t value);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_exp_kernel_arg_mem_obj_tuple_t params);
+inline std::ostream &
+operator<<(std::ostream &os,
+           [[maybe_unused]] const struct ur_exp_kernel_arg_properties_t params);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_arg_value_properties_t params);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_arg_local_properties_t params);
+inline std::ostream &operator<<(std::ostream &os, enum ur_kernel_info_t value);
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_group_info_t value);
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_sub_group_info_t value);
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_cache_config_t value);
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_exec_info_t value);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_arg_pointer_properties_t params);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_exec_info_properties_t params);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_arg_sampler_properties_t params);
+inline std::ostream &operator<<(
+    std::ostream &os,
+    [[maybe_unused]] const struct ur_kernel_arg_mem_obj_properties_t params);
+inline std::ostream &
+operator<<(std::ostream &os,
+           [[maybe_unused]] const struct ur_kernel_native_properties_t params);
 inline std::ostream &
 operator<<(std::ostream &os,
            enum ur_exp_device_2d_block_array_capability_flag_t value);
@@ -590,14 +598,6 @@ inline std::ostream &operator<<(
 inline std::ostream &
 operator<<(std::ostream &os,
            [[maybe_unused]] const struct ur_exp_image_copy_region_t params);
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_exp_kernel_arg_type_t value);
-inline std::ostream &operator<<(
-    std::ostream &os,
-    [[maybe_unused]] const struct ur_exp_kernel_arg_mem_obj_tuple_t params);
-inline std::ostream &
-operator<<(std::ostream &os,
-           [[maybe_unused]] const struct ur_exp_kernel_arg_properties_t params);
 inline std::ostream &operator<<(std::ostream &os,
                                 enum ur_exp_program_flag_t value);
 inline std::ostream &operator<<(std::ostream &os,
@@ -1369,6 +1369,9 @@ inline std::ostream &operator<<(std::ostream &os, enum ur_function_t value) {
     break;
   case UR_FUNCTION_ENQUEUE_HOST_TASK_EXP:
     os << "UR_FUNCTION_ENQUEUE_HOST_TASK_EXP";
+    break;
+  case UR_FUNCTION_COMMAND_BUFFER_APPEND_KERNEL_LAUNCH_WITH_ARGS_EXP:
+    os << "UR_FUNCTION_COMMAND_BUFFER_APPEND_KERNEL_LAUNCH_WITH_ARGS_EXP";
     break;
   default:
     os << "unknown enumerator";
@@ -9623,670 +9626,6 @@ operator<<(std::ostream &os,
   return os;
 }
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_arg_value_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_arg_value_properties_t params) {
-  os << "(struct ur_kernel_arg_value_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_arg_local_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_arg_local_properties_t params) {
-  os << "(struct ur_kernel_arg_local_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_info_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os, enum ur_kernel_info_t value) {
-  switch (value) {
-  case UR_KERNEL_INFO_FUNCTION_NAME:
-    os << "UR_KERNEL_INFO_FUNCTION_NAME";
-    break;
-  case UR_KERNEL_INFO_NUM_ARGS:
-    os << "UR_KERNEL_INFO_NUM_ARGS";
-    break;
-  case UR_KERNEL_INFO_REFERENCE_COUNT:
-    os << "UR_KERNEL_INFO_REFERENCE_COUNT";
-    break;
-  case UR_KERNEL_INFO_CONTEXT:
-    os << "UR_KERNEL_INFO_CONTEXT";
-    break;
-  case UR_KERNEL_INFO_PROGRAM:
-    os << "UR_KERNEL_INFO_PROGRAM";
-    break;
-  case UR_KERNEL_INFO_ATTRIBUTES:
-    os << "UR_KERNEL_INFO_ATTRIBUTES";
-    break;
-  case UR_KERNEL_INFO_NUM_REGS:
-    os << "UR_KERNEL_INFO_NUM_REGS";
-    break;
-  case UR_KERNEL_INFO_SPILL_MEM_SIZE:
-    os << "UR_KERNEL_INFO_SPILL_MEM_SIZE";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-namespace ur::details {
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print ur_kernel_info_t enum value
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_info_t value, size_t size) {
-  if (ptr == NULL) {
-    return printPtr(os, ptr);
-  }
-
-  switch (value) {
-  case UR_KERNEL_INFO_FUNCTION_NAME: {
-
-    const char *tptr = (const char *)ptr;
-    printPtr(os, tptr);
-  } break;
-  case UR_KERNEL_INFO_NUM_ARGS: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_INFO_REFERENCE_COUNT: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_INFO_CONTEXT: {
-    const ur_context_handle_t *tptr = (const ur_context_handle_t *)ptr;
-    if (sizeof(ur_context_handle_t) > size) {
-      os << "invalid size (is: " << size
-         << ", expected: >=" << sizeof(ur_context_handle_t) << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    ur::details::printPtr(os, *tptr);
-
-    os << ")";
-  } break;
-  case UR_KERNEL_INFO_PROGRAM: {
-    const ur_program_handle_t *tptr = (const ur_program_handle_t *)ptr;
-    if (sizeof(ur_program_handle_t) > size) {
-      os << "invalid size (is: " << size
-         << ", expected: >=" << sizeof(ur_program_handle_t) << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    ur::details::printPtr(os, *tptr);
-
-    os << ")";
-  } break;
-  case UR_KERNEL_INFO_ATTRIBUTES: {
-
-    const char *tptr = (const char *)ptr;
-    printPtr(os, tptr);
-  } break;
-  case UR_KERNEL_INFO_NUM_REGS: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_INFO_SPILL_MEM_SIZE: {
-
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    os << "{";
-    size_t nelems = size / sizeof(uint32_t);
-    for (size_t i = 0; i < nelems; ++i) {
-      if (i != 0) {
-        os << ", ";
-      }
-
-      os << tptr[i];
-    }
-    os << "}";
-  } break;
-  default:
-    os << "unknown enumerator";
-    return UR_RESULT_ERROR_INVALID_ENUMERATION;
-  }
-  return UR_RESULT_SUCCESS;
-}
-} // namespace ur::details
-
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_group_info_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_group_info_t value) {
-  switch (value) {
-  case UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:
-    os << "UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE";
-    break;
-  case UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE";
-    break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE:
-    os << "UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-namespace ur::details {
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print ur_kernel_group_info_t enum value
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_group_info_t value, size_t size) {
-  if (ptr == NULL) {
-    return printPtr(os, ptr);
-  }
-
-  switch (value) {
-  case UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE: {
-
-    const size_t *tptr = (const size_t *)ptr;
-    os << "{";
-    size_t nelems = size / sizeof(size_t);
-    for (size_t i = 0; i < nelems; ++i) {
-      if (i != 0) {
-        os << ", ";
-      }
-
-      os << tptr[i];
-    }
-    os << "}";
-  } break;
-  case UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE: {
-    const size_t *tptr = (const size_t *)ptr;
-    if (sizeof(size_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE: {
-
-    const size_t *tptr = (const size_t *)ptr;
-    os << "{";
-    size_t nelems = size / sizeof(size_t);
-    for (size_t i = 0; i < nelems; ++i) {
-      if (i != 0) {
-        os << ", ";
-      }
-
-      os << tptr[i];
-    }
-    os << "}";
-  } break;
-  case UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE: {
-    const size_t *tptr = (const size_t *)ptr;
-    if (sizeof(size_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE: {
-    const size_t *tptr = (const size_t *)ptr;
-    if (sizeof(size_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE: {
-    const size_t *tptr = (const size_t *)ptr;
-    if (sizeof(size_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE: {
-
-    const size_t *tptr = (const size_t *)ptr;
-    os << "{";
-    size_t nelems = size / sizeof(size_t);
-    for (size_t i = 0; i < nelems; ++i) {
-      if (i != 0) {
-        os << ", ";
-      }
-
-      os << tptr[i];
-    }
-    os << "}";
-  } break;
-  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE: {
-    const size_t *tptr = (const size_t *)ptr;
-    if (sizeof(size_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  default:
-    os << "unknown enumerator";
-    return UR_RESULT_ERROR_INVALID_ENUMERATION;
-  }
-  return UR_RESULT_SUCCESS;
-}
-} // namespace ur::details
-
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_sub_group_info_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_sub_group_info_t value) {
-  switch (value) {
-  case UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE:
-    os << "UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE";
-    break;
-  case UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS:
-    os << "UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS";
-    break;
-  case UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS:
-    os << "UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS";
-    break;
-  case UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL:
-    os << "UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-namespace ur::details {
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print ur_kernel_sub_group_info_t enum value
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_sub_group_info_t value, size_t size) {
-  if (ptr == NULL) {
-    return printPtr(os, ptr);
-  }
-
-  switch (value) {
-  case UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL: {
-    const uint32_t *tptr = (const uint32_t *)ptr;
-    if (sizeof(uint32_t) > size) {
-      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
-         << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  default:
-    os << "unknown enumerator";
-    return UR_RESULT_ERROR_INVALID_ENUMERATION;
-  }
-  return UR_RESULT_SUCCESS;
-}
-} // namespace ur::details
-
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_cache_config_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_cache_config_t value) {
-  switch (value) {
-  case UR_KERNEL_CACHE_CONFIG_DEFAULT:
-    os << "UR_KERNEL_CACHE_CONFIG_DEFAULT";
-    break;
-  case UR_KERNEL_CACHE_CONFIG_LARGE_SLM:
-    os << "UR_KERNEL_CACHE_CONFIG_LARGE_SLM";
-    break;
-  case UR_KERNEL_CACHE_CONFIG_LARGE_DATA:
-    os << "UR_KERNEL_CACHE_CONFIG_LARGE_DATA";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_exec_info_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_kernel_exec_info_t value) {
-  switch (value) {
-  case UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS:
-    os << "UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS";
-    break;
-  case UR_KERNEL_EXEC_INFO_USM_PTRS:
-    os << "UR_KERNEL_EXEC_INFO_USM_PTRS";
-    break;
-  case UR_KERNEL_EXEC_INFO_CACHE_CONFIG:
-    os << "UR_KERNEL_EXEC_INFO_CACHE_CONFIG";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-namespace ur::details {
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print ur_kernel_exec_info_t enum value
-template <>
-inline ur_result_t printTagged(std::ostream &os, const void *ptr,
-                               ur_kernel_exec_info_t value, size_t size) {
-  if (ptr == NULL) {
-    return printPtr(os, ptr);
-  }
-
-  switch (value) {
-  case UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS: {
-    const ur_bool_t *tptr = (const ur_bool_t *)ptr;
-    if (sizeof(ur_bool_t) > size) {
-      os << "invalid size (is: " << size
-         << ", expected: >=" << sizeof(ur_bool_t) << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  case UR_KERNEL_EXEC_INFO_USM_PTRS: {
-
-    const void *const *tptr = (const void *const *)ptr;
-    os << "{";
-    size_t nelems = size / sizeof(void *);
-    for (size_t i = 0; i < nelems; ++i) {
-      if (i != 0) {
-        os << ", ";
-      }
-
-      os << tptr[i];
-    }
-    os << "}";
-  } break;
-  case UR_KERNEL_EXEC_INFO_CACHE_CONFIG: {
-    const ur_kernel_cache_config_t *tptr =
-        (const ur_kernel_cache_config_t *)ptr;
-    if (sizeof(ur_kernel_cache_config_t) > size) {
-      os << "invalid size (is: " << size
-         << ", expected: >=" << sizeof(ur_kernel_cache_config_t) << ")";
-      return UR_RESULT_ERROR_INVALID_SIZE;
-    }
-    os << (const void *)(tptr) << " (";
-
-    os << *tptr;
-
-    os << ")";
-  } break;
-  default:
-    os << "unknown enumerator";
-    return UR_RESULT_ERROR_INVALID_ENUMERATION;
-  }
-  return UR_RESULT_SUCCESS;
-}
-} // namespace ur::details
-
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_arg_pointer_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_arg_pointer_properties_t params) {
-  os << "(struct ur_kernel_arg_pointer_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_exec_info_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_exec_info_properties_t params) {
-  os << "(struct ur_kernel_exec_info_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_arg_sampler_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_arg_sampler_properties_t params) {
-  os << "(struct ur_kernel_arg_sampler_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_arg_mem_obj_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_arg_mem_obj_properties_t params) {
-  os << "(struct ur_kernel_arg_mem_obj_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << ", ";
-  os << ".memoryAccess = ";
-
-  ur::details::printFlag<ur_mem_flag_t>(os, (params.memoryAccess));
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_kernel_native_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_kernel_native_properties_t params) {
-  os << "(struct ur_kernel_native_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << ", ";
-  os << ".isNativeHandleOwned = ";
-
-  os << (params.isNativeHandleOwned);
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Print operator for the ur_queue_info_t type
 /// @returns
 ///     std::ostream &
@@ -11424,6 +10763,805 @@ inline ur_result_t printFlag<ur_usm_migration_flag_t>(std::ostream &os,
 }
 } // namespace ur::details
 ///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_exp_kernel_arg_type_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_exp_kernel_arg_type_t value) {
+  switch (value) {
+  case UR_EXP_KERNEL_ARG_TYPE_VALUE:
+    os << "UR_EXP_KERNEL_ARG_TYPE_VALUE";
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_POINTER:
+    os << "UR_EXP_KERNEL_ARG_TYPE_POINTER";
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ:
+    os << "UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ";
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_LOCAL:
+    os << "UR_EXP_KERNEL_ARG_TYPE_LOCAL";
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_SAMPLER:
+    os << "UR_EXP_KERNEL_ARG_TYPE_SAMPLER";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_exp_kernel_arg_mem_obj_tuple_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_exp_kernel_arg_mem_obj_tuple_t params) {
+  os << "(struct ur_exp_kernel_arg_mem_obj_tuple_t){";
+
+  os << ".hMem = ";
+
+  ur::details::printPtr(os, (params.hMem));
+
+  os << ", ";
+  os << ".flags = ";
+
+  ur::details::printFlag<ur_mem_flag_t>(os, (params.flags));
+
+  os << "}";
+  return os;
+}
+namespace ur::details {
+
+///////////////////////////////////////////////////////////////////////////////
+// @brief Print ur_exp_kernel_arg_value_t union
+inline ur_result_t printUnion(std::ostream &os,
+                              const union ur_exp_kernel_arg_value_t params,
+                              const enum ur_exp_kernel_arg_type_t tag) {
+  os << "(union ur_exp_kernel_arg_value_t){";
+
+  switch (tag) {
+  case UR_EXP_KERNEL_ARG_TYPE_VALUE:
+
+    os << ".value = ";
+
+    ur::details::printPtr(os, (params.value));
+
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_POINTER:
+
+    os << ".pointer = ";
+
+    ur::details::printPtr(os, (params.pointer));
+
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ:
+
+    os << ".memObjTuple = ";
+
+    os << (params.memObjTuple);
+
+    break;
+  case UR_EXP_KERNEL_ARG_TYPE_SAMPLER:
+
+    os << ".sampler = ";
+
+    ur::details::printPtr(os, (params.sampler));
+
+    break;
+  default:
+    os << "<unknown>";
+    return UR_RESULT_ERROR_INVALID_ENUMERATION;
+  }
+  os << "}";
+  return UR_RESULT_SUCCESS;
+}
+} // namespace ur::details
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_exp_kernel_arg_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_exp_kernel_arg_properties_t params) {
+  os << "(struct ur_exp_kernel_arg_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << ", ";
+  os << ".type = ";
+
+  os << (params.type);
+
+  os << ", ";
+  os << ".index = ";
+
+  os << (params.index);
+
+  os << ", ";
+  os << ".size = ";
+
+  os << (params.size);
+
+  os << ", ";
+  os << ".value = ";
+  ur::details::printUnion(os, (params.value), params.type);
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_arg_value_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_arg_value_properties_t params) {
+  os << "(struct ur_kernel_arg_value_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_arg_local_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_arg_local_properties_t params) {
+  os << "(struct ur_kernel_arg_local_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_info_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os, enum ur_kernel_info_t value) {
+  switch (value) {
+  case UR_KERNEL_INFO_FUNCTION_NAME:
+    os << "UR_KERNEL_INFO_FUNCTION_NAME";
+    break;
+  case UR_KERNEL_INFO_NUM_ARGS:
+    os << "UR_KERNEL_INFO_NUM_ARGS";
+    break;
+  case UR_KERNEL_INFO_REFERENCE_COUNT:
+    os << "UR_KERNEL_INFO_REFERENCE_COUNT";
+    break;
+  case UR_KERNEL_INFO_CONTEXT:
+    os << "UR_KERNEL_INFO_CONTEXT";
+    break;
+  case UR_KERNEL_INFO_PROGRAM:
+    os << "UR_KERNEL_INFO_PROGRAM";
+    break;
+  case UR_KERNEL_INFO_ATTRIBUTES:
+    os << "UR_KERNEL_INFO_ATTRIBUTES";
+    break;
+  case UR_KERNEL_INFO_NUM_REGS:
+    os << "UR_KERNEL_INFO_NUM_REGS";
+    break;
+  case UR_KERNEL_INFO_SPILL_MEM_SIZE:
+    os << "UR_KERNEL_INFO_SPILL_MEM_SIZE";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+namespace ur::details {
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print ur_kernel_info_t enum value
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_info_t value, size_t size) {
+  if (ptr == NULL) {
+    return printPtr(os, ptr);
+  }
+
+  switch (value) {
+  case UR_KERNEL_INFO_FUNCTION_NAME: {
+
+    const char *tptr = (const char *)ptr;
+    printPtr(os, tptr);
+  } break;
+  case UR_KERNEL_INFO_NUM_ARGS: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_INFO_REFERENCE_COUNT: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_INFO_CONTEXT: {
+    const ur_context_handle_t *tptr = (const ur_context_handle_t *)ptr;
+    if (sizeof(ur_context_handle_t) > size) {
+      os << "invalid size (is: " << size
+         << ", expected: >=" << sizeof(ur_context_handle_t) << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    ur::details::printPtr(os, *tptr);
+
+    os << ")";
+  } break;
+  case UR_KERNEL_INFO_PROGRAM: {
+    const ur_program_handle_t *tptr = (const ur_program_handle_t *)ptr;
+    if (sizeof(ur_program_handle_t) > size) {
+      os << "invalid size (is: " << size
+         << ", expected: >=" << sizeof(ur_program_handle_t) << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    ur::details::printPtr(os, *tptr);
+
+    os << ")";
+  } break;
+  case UR_KERNEL_INFO_ATTRIBUTES: {
+
+    const char *tptr = (const char *)ptr;
+    printPtr(os, tptr);
+  } break;
+  case UR_KERNEL_INFO_NUM_REGS: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_INFO_SPILL_MEM_SIZE: {
+
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    os << "{";
+    size_t nelems = size / sizeof(uint32_t);
+    for (size_t i = 0; i < nelems; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << tptr[i];
+    }
+    os << "}";
+  } break;
+  default:
+    os << "unknown enumerator";
+    return UR_RESULT_ERROR_INVALID_ENUMERATION;
+  }
+  return UR_RESULT_SUCCESS;
+}
+} // namespace ur::details
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_group_info_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_group_info_t value) {
+  switch (value) {
+  case UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:
+    os << "UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE";
+    break;
+  case UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE";
+    break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE:
+    os << "UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+namespace ur::details {
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print ur_kernel_group_info_t enum value
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_group_info_t value, size_t size) {
+  if (ptr == NULL) {
+    return printPtr(os, ptr);
+  }
+
+  switch (value) {
+  case UR_KERNEL_GROUP_INFO_GLOBAL_WORK_SIZE: {
+
+    const size_t *tptr = (const size_t *)ptr;
+    os << "{";
+    size_t nelems = size / sizeof(size_t);
+    for (size_t i = 0; i < nelems; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << tptr[i];
+    }
+    os << "}";
+  } break;
+  case UR_KERNEL_GROUP_INFO_WORK_GROUP_SIZE: {
+    const size_t *tptr = (const size_t *)ptr;
+    if (sizeof(size_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_WORK_GROUP_SIZE: {
+
+    const size_t *tptr = (const size_t *)ptr;
+    os << "{";
+    size_t nelems = size / sizeof(size_t);
+    for (size_t i = 0; i < nelems; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << tptr[i];
+    }
+    os << "}";
+  } break;
+  case UR_KERNEL_GROUP_INFO_LOCAL_MEM_SIZE: {
+    const size_t *tptr = (const size_t *)ptr;
+    if (sizeof(size_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_GROUP_INFO_PREFERRED_WORK_GROUP_SIZE_MULTIPLE: {
+    const size_t *tptr = (const size_t *)ptr;
+    if (sizeof(size_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_GROUP_INFO_PRIVATE_MEM_SIZE: {
+    const size_t *tptr = (const size_t *)ptr;
+    if (sizeof(size_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_WORK_GROUP_SIZE: {
+
+    const size_t *tptr = (const size_t *)ptr;
+    os << "{";
+    size_t nelems = size / sizeof(size_t);
+    for (size_t i = 0; i < nelems; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << tptr[i];
+    }
+    os << "}";
+  } break;
+  case UR_KERNEL_GROUP_INFO_COMPILE_MAX_LINEAR_WORK_GROUP_SIZE: {
+    const size_t *tptr = (const size_t *)ptr;
+    if (sizeof(size_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(size_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  default:
+    os << "unknown enumerator";
+    return UR_RESULT_ERROR_INVALID_ENUMERATION;
+  }
+  return UR_RESULT_SUCCESS;
+}
+} // namespace ur::details
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_sub_group_info_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_sub_group_info_t value) {
+  switch (value) {
+  case UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE:
+    os << "UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE";
+    break;
+  case UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS:
+    os << "UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS";
+    break;
+  case UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS:
+    os << "UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS";
+    break;
+  case UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL:
+    os << "UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+namespace ur::details {
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print ur_kernel_sub_group_info_t enum value
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_sub_group_info_t value, size_t size) {
+  if (ptr == NULL) {
+    return printPtr(os, ptr);
+  }
+
+  switch (value) {
+  case UR_KERNEL_SUB_GROUP_INFO_MAX_SUB_GROUP_SIZE: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_SUB_GROUP_INFO_MAX_NUM_SUB_GROUPS: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_SUB_GROUP_INFO_COMPILE_NUM_SUB_GROUPS: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_SUB_GROUP_INFO_SUB_GROUP_SIZE_INTEL: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  default:
+    os << "unknown enumerator";
+    return UR_RESULT_ERROR_INVALID_ENUMERATION;
+  }
+  return UR_RESULT_SUCCESS;
+}
+} // namespace ur::details
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_cache_config_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_cache_config_t value) {
+  switch (value) {
+  case UR_KERNEL_CACHE_CONFIG_DEFAULT:
+    os << "UR_KERNEL_CACHE_CONFIG_DEFAULT";
+    break;
+  case UR_KERNEL_CACHE_CONFIG_LARGE_SLM:
+    os << "UR_KERNEL_CACHE_CONFIG_LARGE_SLM";
+    break;
+  case UR_KERNEL_CACHE_CONFIG_LARGE_DATA:
+    os << "UR_KERNEL_CACHE_CONFIG_LARGE_DATA";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_exec_info_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_kernel_exec_info_t value) {
+  switch (value) {
+  case UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS:
+    os << "UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS";
+    break;
+  case UR_KERNEL_EXEC_INFO_USM_PTRS:
+    os << "UR_KERNEL_EXEC_INFO_USM_PTRS";
+    break;
+  case UR_KERNEL_EXEC_INFO_CACHE_CONFIG:
+    os << "UR_KERNEL_EXEC_INFO_CACHE_CONFIG";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
+namespace ur::details {
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print ur_kernel_exec_info_t enum value
+template <>
+inline ur_result_t printTagged(std::ostream &os, const void *ptr,
+                               ur_kernel_exec_info_t value, size_t size) {
+  if (ptr == NULL) {
+    return printPtr(os, ptr);
+  }
+
+  switch (value) {
+  case UR_KERNEL_EXEC_INFO_USM_INDIRECT_ACCESS: {
+    const ur_bool_t *tptr = (const ur_bool_t *)ptr;
+    if (sizeof(ur_bool_t) > size) {
+      os << "invalid size (is: " << size
+         << ", expected: >=" << sizeof(ur_bool_t) << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_KERNEL_EXEC_INFO_USM_PTRS: {
+
+    const void *const *tptr = (const void *const *)ptr;
+    os << "{";
+    size_t nelems = size / sizeof(void *);
+    for (size_t i = 0; i < nelems; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << tptr[i];
+    }
+    os << "}";
+  } break;
+  case UR_KERNEL_EXEC_INFO_CACHE_CONFIG: {
+    const ur_kernel_cache_config_t *tptr =
+        (const ur_kernel_cache_config_t *)ptr;
+    if (sizeof(ur_kernel_cache_config_t) > size) {
+      os << "invalid size (is: " << size
+         << ", expected: >=" << sizeof(ur_kernel_cache_config_t) << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  default:
+    os << "unknown enumerator";
+    return UR_RESULT_ERROR_INVALID_ENUMERATION;
+  }
+  return UR_RESULT_SUCCESS;
+}
+} // namespace ur::details
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_arg_pointer_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_arg_pointer_properties_t params) {
+  os << "(struct ur_kernel_arg_pointer_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_exec_info_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_exec_info_properties_t params) {
+  os << "(struct ur_kernel_exec_info_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_arg_sampler_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_arg_sampler_properties_t params) {
+  os << "(struct ur_kernel_arg_sampler_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_arg_mem_obj_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_arg_mem_obj_properties_t params) {
+  os << "(struct ur_kernel_arg_mem_obj_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << ", ";
+  os << ".memoryAccess = ";
+
+  ur::details::printFlag<ur_mem_flag_t>(os, (params.memoryAccess));
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_kernel_native_properties_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &
+operator<<(std::ostream &os,
+           const struct ur_kernel_native_properties_t params) {
+  os << "(struct ur_kernel_native_properties_t){";
+
+  os << ".stype = ";
+
+  os << (params.stype);
+
+  os << ", ";
+  os << ".pNext = ";
+
+  ur::details::printStruct(os, (params.pNext));
+
+  os << ", ";
+  os << ".isNativeHandleOwned = ";
+
+  os << (params.isNativeHandleOwned);
+
+  os << "}";
+  return os;
+}
+///////////////////////////////////////////////////////////////////////////////
 /// @brief Print operator for the ur_exp_device_2d_block_array_capability_flag_t
 /// type
 /// @returns
@@ -12025,141 +12163,6 @@ operator<<(std::ostream &os, const struct ur_exp_image_copy_region_t params) {
   os << ".copyExtent = ";
 
   os << (params.copyExtent);
-
-  os << "}";
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_exp_kernel_arg_type_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &operator<<(std::ostream &os,
-                                enum ur_exp_kernel_arg_type_t value) {
-  switch (value) {
-  case UR_EXP_KERNEL_ARG_TYPE_VALUE:
-    os << "UR_EXP_KERNEL_ARG_TYPE_VALUE";
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_POINTER:
-    os << "UR_EXP_KERNEL_ARG_TYPE_POINTER";
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ:
-    os << "UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ";
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_LOCAL:
-    os << "UR_EXP_KERNEL_ARG_TYPE_LOCAL";
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_SAMPLER:
-    os << "UR_EXP_KERNEL_ARG_TYPE_SAMPLER";
-    break;
-  default:
-    os << "unknown enumerator";
-    break;
-  }
-  return os;
-}
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_exp_kernel_arg_mem_obj_tuple_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_exp_kernel_arg_mem_obj_tuple_t params) {
-  os << "(struct ur_exp_kernel_arg_mem_obj_tuple_t){";
-
-  os << ".hMem = ";
-
-  ur::details::printPtr(os, (params.hMem));
-
-  os << ", ";
-  os << ".flags = ";
-
-  ur::details::printFlag<ur_mem_flag_t>(os, (params.flags));
-
-  os << "}";
-  return os;
-}
-namespace ur::details {
-
-///////////////////////////////////////////////////////////////////////////////
-// @brief Print ur_exp_kernel_arg_value_t union
-inline ur_result_t printUnion(std::ostream &os,
-                              const union ur_exp_kernel_arg_value_t params,
-                              const enum ur_exp_kernel_arg_type_t tag) {
-  os << "(union ur_exp_kernel_arg_value_t){";
-
-  switch (tag) {
-  case UR_EXP_KERNEL_ARG_TYPE_VALUE:
-
-    os << ".value = ";
-
-    ur::details::printPtr(os, (params.value));
-
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_POINTER:
-
-    os << ".pointer = ";
-
-    ur::details::printPtr(os, (params.pointer));
-
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_MEM_OBJ:
-
-    os << ".memObjTuple = ";
-
-    os << (params.memObjTuple);
-
-    break;
-  case UR_EXP_KERNEL_ARG_TYPE_SAMPLER:
-
-    os << ".sampler = ";
-
-    ur::details::printPtr(os, (params.sampler));
-
-    break;
-  default:
-    os << "<unknown>";
-    return UR_RESULT_ERROR_INVALID_ENUMERATION;
-  }
-  os << "}";
-  return UR_RESULT_SUCCESS;
-}
-} // namespace ur::details
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Print operator for the ur_exp_kernel_arg_properties_t type
-/// @returns
-///     std::ostream &
-inline std::ostream &
-operator<<(std::ostream &os,
-           const struct ur_exp_kernel_arg_properties_t params) {
-  os << "(struct ur_exp_kernel_arg_properties_t){";
-
-  os << ".stype = ";
-
-  os << (params.stype);
-
-  os << ", ";
-  os << ".pNext = ";
-
-  ur::details::printStruct(os, (params.pNext));
-
-  os << ", ";
-  os << ".type = ";
-
-  os << (params.type);
-
-  os << ", ";
-  os << ".index = ";
-
-  os << (params.index);
-
-  os << ", ";
-  os << ".size = ";
-
-  os << (params.size);
-
-  os << ", ";
-  os << ".value = ";
-  ur::details::printUnion(os, (params.value), params.type);
 
   os << "}";
   return os;
@@ -20015,6 +20018,134 @@ operator<<(std::ostream &os, [[maybe_unused]] const struct
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Print operator for the
+/// ur_command_buffer_append_kernel_launch_with_args_exp_params_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(
+    std::ostream &os, [[maybe_unused]] const struct
+    ur_command_buffer_append_kernel_launch_with_args_exp_params_t *params) {
+
+  os << ".hCommandBuffer = ";
+
+  ur::details::printPtr(os, *(params->phCommandBuffer));
+
+  os << ", ";
+  os << ".hKernel = ";
+
+  ur::details::printPtr(os, *(params->phKernel));
+
+  os << ", ";
+  os << ".workDim = ";
+
+  os << *(params->pworkDim);
+
+  os << ", ";
+  os << ".pGlobalWorkOffset = ";
+
+  ur::details::printPtr(os, *(params->ppGlobalWorkOffset));
+
+  os << ", ";
+  os << ".pGlobalWorkSize = ";
+
+  ur::details::printPtr(os, *(params->ppGlobalWorkSize));
+
+  os << ", ";
+  os << ".pLocalWorkSize = ";
+
+  ur::details::printPtr(os, *(params->ppLocalWorkSize));
+
+  os << ", ";
+  os << ".numArgs = ";
+
+  os << *(params->pnumArgs);
+
+  os << ", ";
+  os << ".pArgs = ";
+  ur::details::printPtr(os, reinterpret_cast<const void *>(*(params->ppArgs)));
+  if (*(params->ppArgs) != NULL) {
+    os << " {";
+    for (size_t i = 0; i < *params->pnumArgs; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      os << (*(params->ppArgs))[i];
+    }
+    os << "}";
+  }
+
+  os << ", ";
+  os << ".numKernelAlternatives = ";
+
+  os << *(params->pnumKernelAlternatives);
+
+  os << ", ";
+  os << ".phKernelAlternatives = ";
+  ur::details::printPtr(
+      os, reinterpret_cast<const void *>(*(params->pphKernelAlternatives)));
+  if (*(params->pphKernelAlternatives) != NULL) {
+    os << " {";
+    for (size_t i = 0; i < *params->pnumKernelAlternatives; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      ur::details::printPtr(os, (*(params->pphKernelAlternatives))[i]);
+    }
+    os << "}";
+  }
+
+  os << ", ";
+  os << ".numSyncPointsInWaitList = ";
+
+  os << *(params->pnumSyncPointsInWaitList);
+
+  os << ", ";
+  os << ".pSyncPointWaitList = ";
+
+  ur::details::printPtr(os, *(params->ppSyncPointWaitList));
+
+  os << ", ";
+  os << ".numEventsInWaitList = ";
+
+  os << *(params->pnumEventsInWaitList);
+
+  os << ", ";
+  os << ".phEventWaitList = ";
+  ur::details::printPtr(
+      os, reinterpret_cast<const void *>(*(params->pphEventWaitList)));
+  if (*(params->pphEventWaitList) != NULL) {
+    os << " {";
+    for (size_t i = 0; i < *params->pnumEventsInWaitList; ++i) {
+      if (i != 0) {
+        os << ", ";
+      }
+
+      ur::details::printPtr(os, (*(params->pphEventWaitList))[i]);
+    }
+    os << "}";
+  }
+
+  os << ", ";
+  os << ".pSyncPoint = ";
+
+  ur::details::printPtr(os, *(params->ppSyncPoint));
+
+  os << ", ";
+  os << ".phEvent = ";
+
+  ur::details::printPtr(os, *(params->pphEvent));
+
+  os << ", ";
+  os << ".phCommand = ";
+
+  ur::details::printPtr(os, *(params->pphCommand));
+
+  return os;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the
 /// ur_command_buffer_append_usm_memcpy_exp_params_t type
 /// @returns
 ///     std::ostream &
@@ -22858,6 +22989,11 @@ inline ur_result_t UR_APICALL printFunctionParams(std::ostream &os,
   } break;
   case UR_FUNCTION_COMMAND_BUFFER_APPEND_KERNEL_LAUNCH_EXP: {
     os << (const struct ur_command_buffer_append_kernel_launch_exp_params_t *)
+            params;
+  } break;
+  case UR_FUNCTION_COMMAND_BUFFER_APPEND_KERNEL_LAUNCH_WITH_ARGS_EXP: {
+    os << (const struct
+           ur_command_buffer_append_kernel_launch_with_args_exp_params_t *)
             params;
   } break;
   case UR_FUNCTION_COMMAND_BUFFER_APPEND_USM_MEMCPY_EXP: {

@@ -20,9 +20,7 @@ VERBOSE_LOGS = False
 
 DataJson = namedtuple("DataJson", ["runs", "metadata", "tags", "names"])
 DataJsonRun = namedtuple("DataJsonRun", ["name", "results"])
-DataJsonResult = namedtuple(
-    "DataJsonResult", ["name", "label", "suite", "value", "unit"]
-)
+DataJsonResult = namedtuple("DataJsonResult", ["label", "suite", "value", "unit"])
 DataJsonMetatdata = namedtuple(
     "DataJsonMetatdata",
     [
@@ -112,7 +110,6 @@ class App:
                         name=run["name"],
                         results=[
                             DataJsonResult(
-                                name=r["name"],
                                 label=r["label"],
                                 suite=r["suite"],
                                 value=r["value"],
@@ -152,6 +149,7 @@ class TestE2E(unittest.TestCase):
         self.app = App()
         self.app.remove_dirs()
         self.app.prepare_dirs()
+        self.device_arch = os.environ.get("GPU_TYPE", "unknown")
 
     def tearDown(self):
         self.app.remove_dirs()
@@ -167,7 +165,7 @@ class TestE2E(unittest.TestCase):
         self.assertEqual(groupMetadata.type, "group")
 
     def _checkResultsExist(self, caseName: str, out: DataJson):
-        self.assertIn(caseName, [r.name for r in out.runs[0].results])
+        self.assertIn(caseName, [r.label for r in out.runs[0].results])
 
     def _checkExistsInProcessOutput(
         self, proc: subprocess.CompletedProcess, expected: str
@@ -215,111 +213,147 @@ class TestE2E(unittest.TestCase):
 
     def test_torch_l0(self):
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitSingleQueue kernelBatchSize 512, kernelDataType Int32, kernelName Add, kernelParamsNum 5, kernelSubmitPattern Single, kernelWGCount 4096, kernelWGSize 512",
+            "torch_benchmark_l0 KernelSubmitSingleQueue KernelBatchSize 512, KernelDataType Int32, KernelName Add, KernelParamsNum 5, KernelSubmitPattern Single, KernelWGCount 4096, KernelWGSize 512, Profiling 0, UseEvents 0",
             "KernelSubmitSingleQueue Int32Large",
             {"pytorch", "L0"},
             "--test=KernelSubmitSingleQueue.*--profilerType=timer",
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitSingleQueue kernelBatchSize 512, kernelDataType Int32, kernelName Add, kernelParamsNum 5, kernelSubmitPattern Single, kernelWGCount 4096, kernelWGSize 512 CPU count",
+            "torch_benchmark_l0 KernelSubmitSingleQueue KernelBatchSize 512, KernelDataType Int32, KernelName Add, KernelParamsNum 5, KernelSubmitPattern Single, KernelWGCount 4096, KernelWGSize 512, Profiling 0, UseEvents 0 CPU count",
             "KernelSubmitSingleQueue Int32Large, CPU count",
             {"pytorch", "L0"},
             "--test=KernelSubmitSingleQueue.*--profilerType=cpuCounter",
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitMultiQueue kernelWGCount 4096, kernelWGSize 512, kernelsPerQueue 20, measureCompletion 0, useProfiling 0",
+            "torch_benchmark_l0 KernelSubmitMultiQueue KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 20, MeasureCompletionTime 0, Profiling 0, UseEvents 0",
             "KernelSubmitMultiQueue large",
             {"pytorch", "L0"},
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitMultiQueue kernelWGCount 4096, kernelWGSize 512, kernelsPerQueue 20, measureCompletion 1, useProfiling 0 CPU count",
-            "KernelSubmitMultiQueue large, CPU count",
+            "torch_benchmark_l0 KernelSubmitMultiQueue KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 20, MeasureCompletionTime 1, Profiling 0, UseEvents 0 CPU count",
+            "KernelSubmitMultiQueue large with measure completion, CPU count",
             {"pytorch", "L0"},
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitSlmSize kernelBatchSize 512, measureCompletion 1, slmNum 1, useProfiling 0",
-            "KernelSubmitSlmSize small",
+            "torch_benchmark_l0 KernelSubmitSlmSize KernelBatchSize 512, MeasureCompletionTime 1, Profiling 0, SlmNum 1",
+            "KernelSubmitSlmSize small with measure completion",
             {"pytorch", "L0"},
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitLinearKernelSize kernelBatchSize 512, kernelSize 32",
+            "torch_benchmark_l0 KernelSubmitLinearKernelSize KernelBatchSize 512, KernelSize 32, Profiling 0",
             "KernelSubmitLinearKernelSize array32",
             {"pytorch", "L0"},
         )
         self._checkCase(
-            "torch_benchmark_l0 KernelSubmitMemoryReuse kernelBatchSize 4096, kernelDataType Int32",
+            "torch_benchmark_l0 KernelSubmitMemoryReuse KernelBatchSize 4096, KernelDataType Int32, Profiling 0, UseEvents 0",
             "KernelSubmitMemoryReuse Int32Large",
             {"pytorch", "L0"},
         )
+        # FIXME: Graph benchmarks segfault on pvc
+        if not ("pvc" in self.device_arch.lower()):
+            self._checkCase(
+                "torch_benchmark_l0 KernelSubmitGraphSingleQueue KernelBatchSize 10, KernelName Add, KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 10, Profiling 0, UseEvents 0 CPU count",
+                "KernelSubmitGraphSingleQueue small, CPU count",
+                {"pytorch", "L0"},
+            )
+            self._checkCase(
+                "torch_benchmark_l0 KernelSubmitGraphMultiQueue Profiling 0, UseEvents 0, kernelsPerQueue 64, workgroupCount 512, workgroupSize 256 CPU count",
+                "KernelSubmitGraphMultiQueue large, CPU count",
+                {"pytorch", "L0"},
+            )
 
     def test_torch_sycl(self):
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitSingleQueue kernelBatchSize 512, kernelDataType Mixed, kernelName Add, kernelParamsNum 5, kernelSubmitPattern Single, kernelWGCount 512, kernelWGSize 256",
+            "torch_benchmark_sycl KernelSubmitSingleQueue KernelBatchSize 512, KernelDataType Mixed, KernelName Add, KernelParamsNum 5, KernelSubmitPattern Single, KernelWGCount 512, KernelWGSize 256, Profiling 0, UseEvents 0",
             "KernelSubmitSingleQueue MixedMedium",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitMultiQueue kernelWGCount 512, kernelWGSize 256, kernelsPerQueue 10, measureCompletion 1, useProfiling 0",
-            "KernelSubmitMultiQueue medium",
+            "torch_benchmark_sycl KernelSubmitMultiQueue KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 10, MeasureCompletionTime 1, Profiling 0, UseEvents 0",
+            "KernelSubmitMultiQueue medium with measure completion",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitSlmSize kernelBatchSize 512, measureCompletion 0, slmNum 16384, useProfiling 0",
+            "torch_benchmark_sycl KernelSubmitSlmSize KernelBatchSize 512, MeasureCompletionTime 0, Profiling 0, SlmNum 16384",
             "KernelSubmitSlmSize large",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitSlmSize kernelBatchSize 512, measureCompletion 1, slmNum 16384, useProfiling 0 CPU count",
-            "KernelSubmitSlmSize large, CPU count",
+            "torch_benchmark_sycl KernelSubmitSlmSize KernelBatchSize 512, MeasureCompletionTime 1, Profiling 0, SlmNum 16384 CPU count",
+            "KernelSubmitSlmSize large with measure completion, CPU count",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitLinearKernelSize kernelBatchSize 512, kernelSize 5120",
+            "torch_benchmark_sycl KernelSubmitLinearKernelSize KernelBatchSize 512, KernelSize 5120, Profiling 0",
             "KernelSubmitLinearKernelSize array5120",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_sycl KernelSubmitMemoryReuse kernelBatchSize 4096, kernelDataType Float",
+            "torch_benchmark_sycl KernelSubmitMemoryReuse KernelBatchSize 4096, KernelDataType Float, Profiling 0, UseEvents 0",
             "KernelSubmitMemoryReuse FloatLarge",
             {"pytorch", "SYCL"},
         )
+        # FIXME: Graph benchmarks segfault on pvc
+        if not ("pvc" in self.device_arch.lower()):
+            self._checkCase(
+                "torch_benchmark_sycl KernelSubmitGraphSingleQueue KernelBatchSize 32, KernelName Add, KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 32, Profiling 0, UseEvents 0",
+                "KernelSubmitGraphSingleQueue medium",
+                {"pytorch", "SYCL"},
+            )
+            self._checkCase(
+                "torch_benchmark_sycl KernelSubmitGraphMultiQueue Profiling 0, UseEvents 0, kernelsPerQueue 32, workgroupCount 512, workgroupSize 256 CPU count",
+                "KernelSubmitGraphMultiQueue medium, CPU count",
+                {"pytorch", "SYCL"},
+            )
 
     def test_torch_syclpreview(self):
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitSingleQueue kernelBatchSize 512, kernelDataType Mixed, kernelName Add, kernelParamsNum 5, kernelSubmitPattern Single, kernelWGCount 256, kernelWGSize 128",
+            "torch_benchmark_syclpreview KernelSubmitSingleQueue KernelBatchSize 512, KernelDataType Mixed, KernelName Add, KernelParamsNum 5, KernelSubmitPattern Single, KernelWGCount 256, KernelWGSize 128, Profiling 0, UseEvents 0",
             "KernelSubmitSingleQueue MixedSmall",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitMultiQueue kernelWGCount 256, kernelWGSize 128, kernelsPerQueue 4, measureCompletion 1, useProfiling 0",
-            "KernelSubmitMultiQueue small",
+            "torch_benchmark_syclpreview KernelSubmitMultiQueue KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 4, MeasureCompletionTime 1, Profiling 0, UseEvents 0",
+            "KernelSubmitMultiQueue small with measure completion",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitSlmSize kernelBatchSize 512, measureCompletion 1, slmNum 1024, useProfiling 0",
-            "KernelSubmitSlmSize medium",
+            "torch_benchmark_syclpreview KernelSubmitSlmSize KernelBatchSize 512, MeasureCompletionTime 1, Profiling 0, SlmNum 1024",
+            "KernelSubmitSlmSize medium with measure completion",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitLinearKernelSize kernelBatchSize 512, kernelSize 512",
+            "torch_benchmark_syclpreview KernelSubmitLinearKernelSize KernelBatchSize 512, KernelSize 512, Profiling 0",
             "KernelSubmitLinearKernelSize array512",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitLinearKernelSize kernelBatchSize 512, kernelSize 512 CPU count",
+            "torch_benchmark_syclpreview KernelSubmitLinearKernelSize KernelBatchSize 512, KernelSize 512, Profiling 0 CPU count",
             "KernelSubmitLinearKernelSize array512, CPU count",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitMemoryReuse kernelBatchSize 512, kernelDataType Float",
+            "torch_benchmark_syclpreview KernelSubmitMemoryReuse KernelBatchSize 512, KernelDataType Float, Profiling 0, UseEvents 0",
             "KernelSubmitMemoryReuse FloatMedium",
             {"pytorch", "SYCL"},
         )
         self._checkCase(
-            "torch_benchmark_syclpreview KernelSubmitMemoryReuse kernelBatchSize 512, kernelDataType Float CPU count",
+            "torch_benchmark_syclpreview KernelSubmitMemoryReuse KernelBatchSize 512, KernelDataType Float, Profiling 0, UseEvents 0 CPU count",
             "KernelSubmitMemoryReuse FloatMedium, CPU count",
             {"pytorch", "SYCL"},
         )
+        # FIXME: Graph benchmarks segfault on pvc
+        if not ("pvc" in self.device_arch.lower()):
+            self._checkCase(
+                "torch_benchmark_syclpreview KernelSubmitGraphSingleQueue KernelBatchSize 64, KernelName Add, KernelWGCount 512, KernelWGSize 256, KernelsPerQueue 64, Profiling 0, UseEvents 0",
+                "KernelSubmitGraphSingleQueue large",
+                {"pytorch", "SYCL"},
+            )
+            self._checkCase(
+                "torch_benchmark_syclpreview KernelSubmitGraphMultiQueue Profiling 0, UseEvents 0, kernelsPerQueue 10, workgroupCount 512, workgroupSize 256",
+                "KernelSubmitGraphMultiQueue small",
+                {"pytorch", "SYCL"},
+            )
 
 
 if __name__ == "__main__":
